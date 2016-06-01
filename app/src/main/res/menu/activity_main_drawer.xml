@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_camera"
+            android:icon="@android:drawable/presence_video_online"
+            android:title="dash cam" />
+
+        <item
+            android:id="@+id/nav_audio"
+            android:icon="@android:drawable/presence_audio_busy"
+            android:title="audio recorder" />
+
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+
+            <item
+                android:id="@+id/nav_help"
+                android:icon="@android:drawable/ic_menu_help"
+                android:title="help" />
+            <item
+                android:id="@+id/nav_set"
+                android:icon="@android:drawable/ic_menu_manage"
+                android:title="settings" />
+        </menu>
+    </item>
+
+</menu>
