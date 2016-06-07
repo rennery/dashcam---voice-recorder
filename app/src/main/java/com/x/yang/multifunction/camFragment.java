@@ -73,11 +73,12 @@ public class camFragment extends Fragment implements SensorEventListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        int duation = sp.getDuration();
         sensorManager = (SensorManager)this.getActivity(). getSystemService(Context.SENSOR_SERVICE);
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_FASTEST);
-        timer.schedule(new Looptask(),10000,10000);
+        timer.schedule(new Looptask(),duation,duation);
         invis = View.INVISIBLE;
         vis = View.VISIBLE;
     }

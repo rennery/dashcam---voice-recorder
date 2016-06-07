@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.github.mikephil.charting.charts.PieChart;
@@ -48,6 +49,18 @@ public class MainActivity extends FragmentActivity
     private PieChart pchart;
     private SettingProfile sp;
     private String settings = null;
+    String t = "This app can be a dashcam and voice recorder\n" +"" +
+            "A. dashcam introduction\n"+
+            "1. click the button with a triangle sign to start\n" +
+            "2. click the button with a square sign to start\n" +
+            "3. right-top sign indicates the status of app\n" +
+            "4. red dot means recording black double bar means pause\n" +
+            "5. you can change the G sensor level and max number of videos\n" +
+            "6. when G sensor detects higher value, this video will be stored permanently\n" +
+            "7. other normal videos will be remove when reach the max number\n" +
+            "\n" +
+            "B. voice recorder\n" +
+            "1.you can replay the previous one";
     private Fragment f_cam,f_voice;
     private final String filename = "config.txt";
     private Path Path1;
@@ -290,6 +303,13 @@ public class MainActivity extends FragmentActivity
             removeFra();
             privous_fra="search";
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+
+            TextView tv = (TextView)findViewById(R.id.helptext);
+            if(tv.getText().length() == 0)
+            tv.setText(t);
+            else
+                tv.setText("");
 
         }else if(id == R.id.nav_set){
             removeFra();

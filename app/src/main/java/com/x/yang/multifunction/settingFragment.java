@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 
 /**
@@ -22,6 +23,8 @@ public class settingFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private EditText number, G;
+    private SettingProfile sp;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -30,6 +33,7 @@ public class settingFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
 
     public settingFragment() {
+        sp = SettingProfile.getSp();
         // Required empty public constructor
     }
 
@@ -63,8 +67,12 @@ public class settingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_setting, container, false);
+        View v = inflater.inflate(R.layout.fragment_setting, container, false);
+        number =  (EditText) v.findViewById(R.id.numberOfVideo);
+        number.setText(sp.getMaxNumberRecords());
+        G = (EditText) v.findViewById(R.id.gravitylv);
+        G.setText(sp.getG_level());
+        return v;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -91,16 +99,23 @@ public class settingFragment extends Fragment {
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
+    private class changeSetting implements View.OnFocusChangeListener {
+
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if(v.getId() == R.id.numberOfVideo){
+                if(number.getText().length()!=0)
+                sp.setMaxNumberRecords(Integer.getInteger(number.getText().toString()));
+
+            }
+            if(v.getId() == R.id.gravitylv){
+                if(number.getText().length()!=0)
+                    sp.setG_level(Integer.getInteger(number.getText().toString()));
+
+            }
+        }
+    }
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
