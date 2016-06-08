@@ -7,7 +7,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 /**
@@ -25,12 +27,9 @@ public class settingFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
     private EditText number, G;
     private SettingProfile sp;
+    private Button done;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
 
     public settingFragment() {
         sp = SettingProfile.getSp();
@@ -58,10 +57,8 @@ public class settingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
+
     }
 
     @Override
@@ -69,50 +66,39 @@ public class settingFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_setting, container, false);
         number =  (EditText) v.findViewById(R.id.numberOfVideo);
-        number.setText(sp.getMaxNumberRecords());
+        int t = sp.getMaxNumberRecords();
+       // number.setText(t);
         G = (EditText) v.findViewById(R.id.gravitylv);
-        G.setText(sp.getG_level());
+        done = (Button) v.findViewById(R.id.settingdone);
+        done.setOnClickListener(new changeSetting());
+       // G.setText(sp.getG_level());
         return v;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
-    }
+
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
+
     }
 
 
-    private class changeSetting implements View.OnFocusChangeListener {
+    private class changeSetting implements View.OnClickListener {
 
         @Override
-        public void onFocusChange(View v, boolean hasFocus) {
-            if(v.getId() == R.id.numberOfVideo){
-                if(number.getText().length()!=0)
+        public void onClick(View v) {
+            if(number.getText().length()!=0)
                 sp.setMaxNumberRecords(Integer.getInteger(number.getText().toString()));
-
-            }
-            if(v.getId() == R.id.gravitylv){
-                if(number.getText().length()!=0)
-                    sp.setG_level(Integer.getInteger(number.getText().toString()));
-
+            else
+                Toast.makeText(settingFragment.this.getActivity(),"can not be blank",Toast.LENGTH_LONG).show();
+            if(number.getText().length()!=0)
+                sp.setG_level(Integer.getInteger(G.getText().toString()));
+            else
+                Toast.makeText(settingFragment.this.getActivity(),"can not be blank",Toast.LENGTH_LONG).show();
+            if(Integer.getInteger(number.getText().toString())>10){
+                Toast.makeText(settingFragment.this.getActivity(),"high number may run out of memory space",Toast.LENGTH_LONG).show();
             }
         }
     }

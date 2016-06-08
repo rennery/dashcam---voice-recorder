@@ -5,7 +5,7 @@ package com.x.yang.multifunction;
  */
 public class SettingProfile {
     private int maxNumberRecords = 1;
-    private int duration = 60000;
+    private int duration = 1000*60*5;
     private String unit = "cm";
     private int G_level = 25;
 

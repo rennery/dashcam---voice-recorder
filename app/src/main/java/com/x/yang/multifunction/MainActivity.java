@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -49,7 +50,7 @@ public class MainActivity extends FragmentActivity
     private PieChart pchart;
     private SettingProfile sp;
     private String settings = null;
-    String t = "This app can be a dashcam and voice recorder\n" +"" +
+    private static String t = "This app can be a dashcam and voice recorder\n" +"" +
             "A. dashcam introduction\n"+
             "1. click the button with a triangle sign to start\n" +
             "2. click the button with a square sign to start\n" +
@@ -97,10 +98,10 @@ public class MainActivity extends FragmentActivity
             e.printStackTrace();
         }
         if(settings !=null){
-            String g = settings.substring(0,1);
+            String g = settings.substring(0,2);
             int k = Integer.parseInt(g);
             sp.setG_level(k);
-            String num= settings.substring(1);
+            String num= settings.substring(2);
             k = Integer.parseInt(num);
             sp.setMaxNumberRecords(k);
         }
@@ -121,13 +122,10 @@ public class MainActivity extends FragmentActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        sv = (SearchView)findViewById(R.id.searchView);
-        sv.setVisibility(View.INVISIBLE);
-        mViewFlipper =(ViewFlipper)findViewById(R.id.viewFlipper);
+
 
         //mViewFlipper.startFlipping();
-        pchart = (PieChart) findViewById(R.id.spread_pie_chart);
-        PieData mPieData = getPieData(4, 100);
+
         //showChart(pchart, mPieData);
     }
 
@@ -179,68 +177,7 @@ public class MainActivity extends FragmentActivity
 
     }
 
-    private PieData getPieData(int count, float range) {
 
-        long blockSize=0;
-        long blockCount=0;
-        long availCount=0;
-        ArrayList<String> xValues = new ArrayList<String>();
-        xValues.add("video");
-        xValues.add("photo");
-        xValues.add("audio");
-        xValues.add("apks");
-        xValues.add("other");
-        xValues.add("free");
-
-        String state = Environment.getExternalStorageState();
-        if(Environment.MEDIA_MOUNTED.equals(state)) {
-            File sdcardDir = Environment.getExternalStorageDirectory();
-            StatFs sf = new StatFs(sdcardDir.getPath());
-            blockSize = sf.getBlockSize();
-            blockCount = sf.getBlockCount();
-            availCount = sf.getAvailableBlocks();
-            Log.d("", "block大小:"+ blockSize+",block数目:"+ blockCount+",总大小:"+blockSize*blockCount/1024+"KB");
-            Log.d("", "可用的block数目：:"+ availCount+",剩余空间:"+ availCount*blockSize/1024+"KB");
-        }
-
-        ArrayList<Entry> yValues = new ArrayList<Entry>();
-
-        float quarterly1 = 14;
-        float quarterly2 = 14;
-        float quarterly3 = 34;
-        float quarterly4 = 12;
-        float quarterly5 = 12;
-        float quarterly6 = (float) (availCount*100/blockCount);
-
-        yValues.add(new Entry(quarterly1, 0));
-        yValues.add(new Entry(quarterly2, 1));
-        yValues.add(new Entry(quarterly3, 2));
-        yValues.add(new Entry(quarterly4, 3));
-        yValues.add(new Entry(quarterly5, 4));
-        yValues.add(new Entry(quarterly6, 5));
-
-        PieDataSet pieDataSet = new PieDataSet(yValues, "total memory space:"+(float)(blockSize*blockCount/1024/1024/1024)+"GB");
-        pieDataSet.setSliceSpace(0f);
-
-        ArrayList<Integer> colors = new ArrayList<Integer>();
-
-
-        colors.add(Color.rgb(205, 205, 205));
-        colors.add(Color.rgb(114, 188, 223));
-        colors.add(Color.rgb(255, 123, 124));
-        colors.add(Color.rgb(57, 135, 200));
-
-        pieDataSet.setColors(colors);
-        pieDataSet.setValueTextSize(16f);
-
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        float px = 5 * (metrics.densityDpi / 160f);
-        pieDataSet.setSelectionShift(px);
-
-        PieData pieData = new PieData(xValues, pieDataSet);
-
-        return pieData;
-    }
 
     @Override
     public void onBackPressed() {
@@ -278,7 +215,8 @@ public class MainActivity extends FragmentActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
+        ImageView iv = (ImageView) findViewById(R.id.imageView2);
+        iv.setVisibility(View.INVISIBLE);
         if (id == R.id.nav_camera) {
             removeFra();
             privous_fra = "camera";
@@ -315,6 +253,11 @@ public class MainActivity extends FragmentActivity
             removeFra();
             privous_fra="setting";
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            Fragment fragment = fm.findFragmentById(R.id.fra_cam);
+            if(fragment == null){
+                fragment = new settingFragment();
+                fm.beginTransaction().add(R.id.fra_cam,fragment).commit();
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -330,7 +273,7 @@ public class MainActivity extends FragmentActivity
         String setting =Integer.toString(sp.getG_level())+sp.getMaxNumberRecords();
 
         try {
-            out = this.openFileOutput(filename, Context.MODE_PRIVATE);
+            out = this.openFileOutput(filename, Context.MODE_WORLD_READABLE);
             out.write(setting.getBytes("UTF-8"));
             out.close();
         } catch (IOException e) {
@@ -345,31 +288,36 @@ public class MainActivity extends FragmentActivity
             case "camera":
                 fragment = fm.findFragmentById(R.id.fra_cam);
                 fm.beginTransaction().remove(fragment).commit();
+                fm.executePendingTransactions();
                 break;
             case "ruler":
                 fragment = fm.findFragmentById(R.id.fra_cam);
                 fm.beginTransaction().remove(fragment).commit();
+                fm.executePendingTransactions();
                 break;
             case "audio":
                 fragment = fm.findFragmentById(R.id.fra_cam);
                 fm.beginTransaction().remove(fragment).commit();
+                fm.executePendingTransactions();
                 break;
             case "apks":
                 fragment = fm.findFragmentById(R.id.fra_cam);
                 fm.beginTransaction().remove(fragment).commit();
+                fm.executePendingTransactions();
+                break;
 
             case "search":      //search is help
-                fragment = fm.findFragmentById(R.id.fra_cam);
-                fm.beginTransaction().remove(fragment).commit();
+
                 break;
             case "setting":
                 fragment = fm.findFragmentById(R.id.fra_cam);
                 fm.beginTransaction().remove(fragment).commit();
+                fm.executePendingTransactions();
                 break;
             default:
                 ;
                 break;
         }
-        fm.executePendingTransactions();
+
     }
 }
