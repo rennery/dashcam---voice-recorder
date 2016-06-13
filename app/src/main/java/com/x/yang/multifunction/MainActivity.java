@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -74,10 +75,13 @@ public class MainActivity extends FragmentActivity
         sp= SettingProfile.getSp();
         f_cam = new camFragment();
         f_voice = new videoFragment();
+
+
         if (savedInstanceState != null) {
             privous_fra = savedInstanceState.getString("temp");
         }
         setContentView(R.layout.activity_main);
+
         FileInputStream in = null;
         ByteArrayOutputStream bout = null;
         byte[]buf = new byte[1024];
@@ -123,7 +127,10 @@ public class MainActivity extends FragmentActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
+        mViewFlipper =(ViewFlipper)findViewById(R.id.viewFlipper);
+        mViewFlipper.setFlipInterval(2000);
+        mViewFlipper.setAnimation(AnimationUtils.loadAnimation(this,R.anim.aa));
+        mViewFlipper.setAutoStart(true);
         //mViewFlipper.startFlipping();
 
         //showChart(pchart, mPieData);
@@ -155,27 +162,6 @@ public class MainActivity extends FragmentActivity
         }
     }
 
-    private void showChart(PieChart pieChart, PieData pieData) {
-        pieChart.setHoleRadius(60f);
-        pieChart.setTransparentCircleRadius(64f);
-        pieChart.setDescription("");
-        pieChart.setDrawCenterText(true);
-        pieChart.setDrawHoleEnabled(true);
-        pieChart.setRotationAngle(90);
-        pieChart.setRotationEnabled(true);
-        pieChart.setUsePercentValues(true);
-        pieChart.setCenterText("usage of memory space");
-        pieChart.setData(pieData);
-
-        Legend mLegend = pieChart.getLegend();
-        mLegend.setEnabled(false);
-       // mLegend.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
-        //mLegend.setXEntrySpace(7f);
-       // mLegend.setYEntrySpace(5f);
-
-        pieChart.animateXY(1000, 1000);
-
-    }
 
 
 
@@ -215,8 +201,6 @@ public class MainActivity extends FragmentActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        ImageView iv = (ImageView) findViewById(R.id.imageView2);
-        iv.setVisibility(View.INVISIBLE);
         if (id == R.id.nav_camera) {
             removeFra();
             privous_fra = "camera";
